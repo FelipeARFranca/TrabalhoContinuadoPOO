@@ -2,10 +2,11 @@ package br.com.cesarschool.poo.titulos.repositorios;
 
 import br.com.cesarschool.poo.titulos.entidades.Acao;
 
+import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
+
 /*
  * Deve gravar em e ler de um arquivo texto chamado Acao.txt os dados dos objetos do tipo
  * Acao. Seguem abaixo exemplos de linhas (identificador, nome, dataValidade, valorUnitario)
@@ -14,27 +15,164 @@ import java.io.FileNotFoundException;
     2;BANCO DO BRASIL;2026-01-01;21.21
     3;CORREIOS;2027-11-11;6.12 
  * 
- * A inclusão deve adicionar uma nova linha ao arquivo. Não é permitido incluir 
- * identificador repetido. Neste caso, o método deve retornar false. Inclusão com 
+ * A inclus�o deve adicionar uma nova linha ao arquivo. N�o � permitido incluir 
+ * identificador repetido. Neste caso, o m�todo deve retornar false. Inclus�o com 
  * sucesso, retorno true.
  * 
- * A alteração deve substituir a linha atual por uma nova linha. A linha deve ser 
- * localizada por identificador que, quando não encontrado, enseja retorno false. 
- * Alteração com sucesso, retorno true.  
+ * A altera��o deve substituir a linha atual por uma nova linha. A linha deve ser 
+ * localizada por identificador que, quando n�o encontrado, enseja retorno false. 
+ * Altera��o com sucesso, retorno true.  
  *   
- * A exclusão deve apagar a linha atual do arquivo. A linha deve ser 
- * localizada por identificador que, quando não encontrado, enseja retorno false. 
- * Exclusão com sucesso, retorno true.
+ * A exclus�o deve apagar a linha atual do arquivo. A linha deve ser 
+ * localizada por identificador que, quando n�o encontrado, enseja retorno false. 
+ * Exclus�o com sucesso, retorno true.
  * 
  * A busca deve localizar uma linha por identificador, materializar e retornar um 
- * objeto. Caso o identificador não seja encontrado no arquivo, retornar null.   
+ * objeto. Caso o identificador n�o seja encontrado no arquivo, retornar null.   
  */
-public class RepositorioAcao {
+public class RepositorioAcao { 
 	public boolean incluir(Acao acao) {
-		return false;
+		
+		String dadoAcao = acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario();
+		BufferedReader reader = null;
+		boolean existingDataFlag = false;
+		
+		try {
+            reader = new BufferedReader(new FileReader("Acao.txt"));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+            	
+            	String identificador = String.valueOf(acao.getIdentificador());
+            	int delimitador = line.indexOf(';');
+            	String lineId = line.substring(0, delimitador);
+            	
+                if(identificador.equals(lineId)) {
+                	existingDataFlag = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } 
+		
+		finally {
+			
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+		
+		if(existingDataFlag == true) {
+			return false;
+		}
+		
+		try {
+			FileWriter writer = new FileWriter("Acao.txt");
+			writer.append(dadoAcao + "\n");
+			writer.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	public boolean alterar(Acao acao) {
-		return false;
+		BufferedReader reader = null;
+		boolean existingDataFlag = false;
+		int lineCount = 0, lineIndex = 0;
+		
+		try {
+            reader = new BufferedReader(new FileReader("Acao.txt"));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+            	lineCount++;
+            	
+            	String identificador = String.valueOf(acao.getIdentificador());
+            	int delimitador = line.indexOf(';');
+            	String lineId = line.substring(0, delimitador);
+            	
+                if(identificador.equals(lineId)) {
+                	existingDataFlag = true;
+                	lineIndex = lineCount - 1;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } 
+		
+		finally {
+			
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+		
+		if(existingDataFlag == false) {
+			return false;
+		}
+		
+		String [] lines = new String[lineCount];
+		
+		try {
+            reader = new BufferedReader(new FileReader("Acao.txt"));
+            String line;
+            int i = 0;
+
+            while ((line = reader.readLine()) != null) {
+            	lines[i] = line;
+            	i++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } 
+		
+		finally {
+			
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+		
+		String dadoAcao = acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario();
+		
+		lines[lineIndex] = dadoAcao;
+		
+		try {
+			FileWriter writer = new FileWriter("Acao.txt");
+			writer.write("");
+			
+			for(int i = 0; i < lineCount; i++) {
+				writer.append(lines[i] + "\n");
+			}
+			writer.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	public boolean excluir(int identificador) {
 		return false;
