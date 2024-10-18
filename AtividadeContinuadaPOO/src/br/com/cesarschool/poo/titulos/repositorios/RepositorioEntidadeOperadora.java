@@ -1,4 +1,12 @@
 package br.com.cesarschool.poo.titulos.repositorios;
+
+import br.com.cesarschool.poo.titulos.entidades.EntidadeOperadora;
+
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+
 /*
  * Deve gravar em e ler de um arquivo texto chamado Acao.txt os dados dos objetos do tipo
  * Acao. Seguem abaixo exemplos de linhas.
@@ -7,21 +15,160 @@ package br.com.cesarschool.poo.titulos.repositorios;
     2;BANCO DO BRASIL;2026-01-01;21.21
     3;CORREIOS;2027-11-11;6.12 
  * 
- * A inclusão deve adicionar uma nova linha ao arquivo. Não é permitido incluir 
- * identificador repetido. Neste caso, o método deve retornar false. Inclusão com 
+ * A inclusï¿½o deve adicionar uma nova linha ao arquivo. Nï¿½o ï¿½ permitido incluir 
+ * identificador repetido. Neste caso, o mï¿½todo deve retornar false. Inclusï¿½o com 
  * sucesso, retorno true.
  * 
- * A alteração deve substituir a linha atual por uma nova linha. A linha deve ser 
- * localizada por identificador que, quando não encontrado, enseja retorno false. 
- * Alteração com sucesso, retorno true.  
+ * A alteraï¿½ï¿½o deve substituir a linha atual por uma nova linha. A linha deve ser 
+ * localizada por identificador que, quando nï¿½o encontrado, enseja retorno false. 
+ * Alteraï¿½ï¿½o com sucesso, retorno true.  
  *   
- * A exclusão deve apagar a linha atual do arquivo. A linha deve ser 
- * localizada por identificador que, quando não encontrado, enseja retorno false. 
- * Exclusão com sucesso, retorno true.
+ * A exclusï¿½o deve apagar a linha atual do arquivo. A linha deve ser 
+ * localizada por identificador que, quando nï¿½o encontrado, enseja retorno false. 
+ * Exclusï¿½o com sucesso, retorno true.
  * 
  * A busca deve localizar uma linha por identificador, materializar e retornar um 
- * objeto. Caso o identificador não seja encontrado no arquivo, retornar null.   
+ * objeto. Caso o identificador nï¿½o seja encontrado no arquivo, retornar null.   
  */
 public class RepositorioEntidadeOperadora {
+	
+	public boolean incluir(EntidadeOperadora entidadeOperadora) {
+
+		String dadoAcao = entidadeOperadora.getIdentificador()+";"+entidadeOperadora.getNome()+";"+entidadeOperadora.getAutorizadoAcao()+";"+entidadeOperadora.getSaldoAcao()+";"+entidadeOperadora.getSaldoTituloDivida();
+		boolean existingDataFlag = false;
+
+		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				String identificador = String.valueOf(entidadeOperadora.getIdentificador());
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(identificador.equals(lineId)) {
+					existingDataFlag = true;
+					break;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		if (existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt", true)) {
+			writer.append(dadoAcao + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean alterar(EntidadeOperadora entidadeOperadora) {
+		boolean existingDataFlag = false;
+		StringBuilder content = new StringBuilder();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				String identificador = String.valueOf(entidadeOperadora.getIdentificador());
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(identificador.equals(lineId)) {
+					existingDataFlag = true;
+					content.append(entidadeOperadora.getIdentificador()+";"+entidadeOperadora.getNome()+";"+entidadeOperadora.getAutorizadoAcao()+";"+entidadeOperadora.getSaldoAcao()+";"+entidadeOperadora.getSaldoTituloDivida()).append("\n");
+				} else {
+					content.append(line).append("\n");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		if (!existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt")) {
+			writer.write(content.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean excluir(int identificador) {
+		boolean existingDataFlag = false;
+		StringBuilder content = new StringBuilder();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(!lineId.equals(String.valueOf(identificador))) {
+					content.append(line).append("\n");
+				} else {
+					existingDataFlag = true;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		if (!existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt")) {
+			writer.write(content.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+	public EntidadeOperadora buscar(int identificador) {
+		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(lineId.equals(String.valueOf(identificador))) {
+					
+					EntidadeOperadora entidadeOperadora = null;
+					
+					String[] dados = line.split(";");
+					String nome = dados[1];
+					boolean autorizadoAcao = Boolean.parseBoolean(dados[2]);
+					double saldoAcao = Double.parseDouble(dados[3]);
+					double saldoTituloDivida = Double.parseDouble(dados[4]);
+					
+					entidadeOperadora = new EntidadeOperadora(identificador, nome, autorizadoAcao);
+					
+					entidadeOperadora.creditarSaldoAcao(saldoAcao);
+					entidadeOperadora.creditarSaldoTituloDivida(saldoTituloDivida);
+
+					return entidadeOperadora;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 }
