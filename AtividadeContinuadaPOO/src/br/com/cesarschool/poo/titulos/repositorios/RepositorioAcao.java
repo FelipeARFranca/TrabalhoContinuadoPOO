@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /*
  * Deve gravar em e ler de um arquivo texto chamado Acao.txt os dados dos objetos do tipo
@@ -30,154 +32,137 @@ import java.io.IOException;
  * A busca deve localizar uma linha por identificador, materializar e retornar um 
  * objeto. Caso o identificador n�o seja encontrado no arquivo, retornar null.   
  */
+
 public class RepositorioAcao { 
+
 	public boolean incluir(Acao acao) {
-		
+
 		String dadoAcao = acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario();
-		BufferedReader reader = null;
 		boolean existingDataFlag = false;
-		
-		try {
-            reader = new BufferedReader(new FileReader("Acao.txt"));
-            String line;
 
-            while ((line = reader.readLine()) != null) {
-            	
-            	String identificador = String.valueOf(acao.getIdentificador());
-            	int delimitador = line.indexOf(';');
-            	String lineId = line.substring(0, delimitador);
-            	
-                if(identificador.equals(lineId)) {
-                	existingDataFlag = true;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } 
-		
-		finally {
-			
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-		
-		if(existingDataFlag == true) {
-			return false;
-		}
-		
-		try {
-			FileWriter writer = new FileWriter("Acao.txt");
-			writer.append(dadoAcao + "\n");
-			writer.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	public boolean alterar(Acao acao) {
-		BufferedReader reader = null;
-		boolean existingDataFlag = false;
-		int lineCount = 0, lineIndex = 0;
-		
-		try {
-            reader = new BufferedReader(new FileReader("Acao.txt"));
-            String line;
+		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
+			String line;
 
-            while ((line = reader.readLine()) != null) {
-            	lineCount++;
-            	
-            	String identificador = String.valueOf(acao.getIdentificador());
-            	int delimitador = line.indexOf(';');
-            	String lineId = line.substring(0, delimitador);
-            	
-                if(identificador.equals(lineId)) {
-                	existingDataFlag = true;
-                	lineIndex = lineCount - 1;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } 
-		
-		finally {
-			
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-		
-		if(existingDataFlag == false) {
-			return false;
-		}
-		
-		String [] lines = new String[lineCount];
-		
-		try {
-            reader = new BufferedReader(new FileReader("Acao.txt"));
-            String line;
-            int i = 0;
+			while ((line = reader.readLine()) != null) {
+				String identificador = String.valueOf(acao.getIdentificador());
+				String lineId = line.substring(0, line.indexOf(';'));
 
-            while ((line = reader.readLine()) != null) {
-            	lines[i] = line;
-            	i++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } 
-		
-		finally {
-			
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-		
-		String dadoAcao = acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario();
-		
-		lines[lineIndex] = dadoAcao;
-		
-		try {
-			FileWriter writer = new FileWriter("Acao.txt");
-			writer.write("");
-			
-			for(int i = 0; i < lineCount; i++) {
-				writer.append(lines[i] + "\n");
+				if(identificador.equals(lineId)) {
+					existingDataFlag = true;
+					break;
+				}
 			}
-			writer.close();
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
+		if (existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt", true)) {
+			writer.append(dadoAcao + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
 		return true;
 	}
-	public boolean excluir(int identificador) {
-		return false;
+
+	public boolean alterar(Acao acao) {
+		boolean existingDataFlag = false;
+		StringBuilder content = new StringBuilder();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				String identificador = String.valueOf(acao.getIdentificador());
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(identificador.equals(lineId)) {
+					existingDataFlag = true;
+					content.append(acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario()).append("\n");
+				} else {
+					content.append(line).append("\n");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		if (!existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt")) {
+			writer.write(content.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
 	}
+
+	public boolean excluir(int identificador) {
+		boolean existingDataFlag = false;
+		StringBuilder content = new StringBuilder();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(!lineId.equals(String.valueOf(identificador))) {
+					content.append(line).append("\n");
+				} else {
+					existingDataFlag = true;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		if (!existingDataFlag) {
+			return false;
+		}
+
+		try (FileWriter writer = new FileWriter("Acao.txt")) {
+			writer.write(content.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
 	public Acao buscar(int identificador) {
+		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				String lineId = line.substring(0, line.indexOf(';'));
+
+				if(lineId.equals(String.valueOf(identificador))) {
+					String[] dados = line.split(";");
+					String nome = dados[1];
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					LocalDate dataDeValidade = LocalDate.parse(dados[2], formatter);
+					double valorUnitario = Double.parseDouble(dados[3]);
+
+					return new Acao(identificador, nome, dataDeValidade, valorUnitario);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 }
