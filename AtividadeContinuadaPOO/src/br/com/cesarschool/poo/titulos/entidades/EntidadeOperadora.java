@@ -21,13 +21,6 @@ package br.com.cesarschool.poo.titulos.entidades;
  *  void debitarSaldoTituloDivida(double valor): deve diminuir valor de saldoTituloDivida  
  */
 public class EntidadeOperadora {
-	public double getSaldoAcao() {
-		return saldoAcao;
-	}
-
-	public double getSaldoTituloDivida() {
-		return saldoTituloDivida;
-	}
 
 	private long identificador;
 	private String nome;
@@ -40,7 +33,13 @@ public class EntidadeOperadora {
 		this.nome = nome;
 		this.autorizadoAcao = autorizadoAcao;
 	}
+	public double getSaldoAcao() {
+		return saldoAcao;
+	}
 
+	public double getSaldoTituloDivida() {
+		return saldoTituloDivida;
+	}
 	public long getIdentificador() {
 		return identificador;
 	}
