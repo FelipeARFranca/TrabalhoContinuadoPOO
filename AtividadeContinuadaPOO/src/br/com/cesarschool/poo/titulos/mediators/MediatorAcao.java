@@ -119,7 +119,7 @@ public class MediatorAcao {
 			return validar(acao);
 		}
 		else {
-			boolean retornoRepo = repositorioAcao.incluir(acao);
+			boolean retornoRepo = repositorioAcao.alterar(acao);
 			
 			if(!retornoRepo) {
 				return "Ação inexistente";

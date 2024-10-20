@@ -62,39 +62,4 @@ public class Transacao {
 		return dataHoraOperacao;
 	}
 
-	
-	@Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        sb.append("Transação:\n");
-        sb.append("Entidade Crédito: ").append(entidadeCredito.getNome())
-          .append(" (ID: ").append(entidadeCredito.getIdentificador()).append(")\n");
-        sb.append("Entidade Débito: ").append(entidadeDebito.getNome())
-          .append(" (ID: ").append(entidadeDebito.getIdentificador()).append(")\n");
-        
-        if (acao != null) {
-            sb.append("Ação: ").append(acao.getNome())
-              .append(" (ID: ").append(acao.getIdentificador()).append(")\n");
-            sb.append("Data de Validade da Ação: ").append(acao.getDataDeValidade()).append("\n");
-            sb.append("Valor Unitário da Ação: ").append(acao.getValorUnitario()).append("\n");
-        } else {
-            sb.append("Ação: null\n");
-        }
-        
-        if (tituloDivida != null) {
-            sb.append("Título de Dívida: ").append(tituloDivida.getNome())
-              .append(" (ID: ").append(tituloDivida.getIdentificador()).append(")\n");
-            sb.append("Data de Validade do Título: ").append(tituloDivida.getDataDeValidade()).append("\n");
-            sb.append("Taxa de Juros: ").append(tituloDivida.getTaxaJuros()).append("\n");
-        } else {
-            sb.append("Título de Dívida: null\n");
-        }
-        
-        sb.append("Valor da Operação: ").append(valorOperacao).append("\n");
-        sb.append("Data e Hora da Operação: ").append(dataHoraOperacao.format(formatter)).append("\n");
-
-        return sb.toString();
-    }
 }

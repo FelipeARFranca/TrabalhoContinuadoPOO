@@ -154,18 +154,17 @@ public class MediatorOperacao {
         } else {
             tituloDivida = mediatorTituloDivida.buscar(idAcaoOuTitulo);
         }
-
+        
         if (ehAcao) {
-            if (debito.getSaldoAcao() >= valor) {
+            if (debito.getSaldoAcao() < valor) {
                 return "Saldo da entidade débito insuficiente";
             }
         } else {
-            if (debito.getSaldoTituloDivida() >= valor) {
+            if (debito.getSaldoTituloDivida() < valor) {
                 return "Saldo da entidade débito insuficiente";
             }
         }
 
-        // 8- Verificar se o valor é maior que o valor unitário da ação
         if (ehAcao && acao.getValorUnitario() > valor && acao != null) {
             return "Valor da operação é menor do que o valor unitário da ação";
         }

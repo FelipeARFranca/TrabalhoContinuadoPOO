@@ -58,7 +58,7 @@ public class RepositorioEntidadeOperadora {
 			return false;
 		}
 
-		try (FileWriter writer = new FileWriter("Acao.txt", true)) {
+		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt", true)) {
 			writer.append(dadoAcao + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,7 +95,7 @@ public class RepositorioEntidadeOperadora {
 			return false;
 		}
 
-		try (FileWriter writer = new FileWriter("Acao.txt")) {
+		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt")) {
 			writer.write(content.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -129,7 +129,7 @@ public class RepositorioEntidadeOperadora {
 			return false;
 		}
 
-		try (FileWriter writer = new FileWriter("Acao.txt")) {
+		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt")) {
 			writer.write(content.toString());
 		} catch (IOException e) {
 			e.printStackTrace();

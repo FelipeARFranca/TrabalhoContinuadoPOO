@@ -103,7 +103,7 @@ public class MediatorEntidadeOperadora {
 			return validar(entidadeOperadora);
 		}
 		else {
-			boolean retornoRepo = repositorioEntidadeOperadora.incluir(entidadeOperadora);
+			boolean retornoRepo = repositorioEntidadeOperadora.alterar(entidadeOperadora);
 			
 			if(!retornoRepo) {
 				return "Entidade inexistente";
