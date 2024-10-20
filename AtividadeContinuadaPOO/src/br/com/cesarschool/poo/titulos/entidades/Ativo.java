@@ -27,10 +27,6 @@ public class Ativo {
 		return identificador;
 	}
 
-	private void setIdentificador(int identificador) {
-		this.identificador = identificador;
-	}
-
 	public String getNome() {
 		return nome;
 	}
