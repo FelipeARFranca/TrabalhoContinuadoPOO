@@ -66,6 +66,49 @@ public class RepositorioTransacao {
 
         return transacoes.toArray(new Transacao[0]);
     }
+    
+    public Transacao[] buscarPorEntidadeDebito(int identificadorEntidadeDebito) {
+        int count = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Transacao.txt"))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] dados = line.split(";");
+                if (Integer.parseInt(dados[5]) == identificadorEntidadeDebito) {
+                    count++;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Transacao[0]; 
+        }
+
+        if (count == 0) {
+            return new Transacao[0];
+        }
+
+        Transacao[] transacoes = new Transacao[count];
+        int index = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Transacao.txt"))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] dados = line.split(";");
+                if (Integer.parseInt(dados[5]) == identificadorEntidadeDebito) {
+                    Transacao transacao = montarTransacao(dados);
+                    transacoes[index++] = transacao;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new Transacao[0]; 
+        }
+
+        return transacoes;
+    }
+
 
     private String montarLinhaTransacao(Transacao transacao) {
         StringBuilder sb = new StringBuilder();
@@ -140,4 +183,5 @@ public class RepositorioTransacao {
 
         return new Transacao(entidadeCredito, entidadeDebito, acao, tituloDivida, valorOperacao, dataHoraOperacao);
     }
+
 }

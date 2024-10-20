@@ -58,7 +58,19 @@ import br.com.cesarschool.poo.titulos.repositorios.RepositorioAcao;
  * que ele retornar. Se o identificador for inválido, retornar null. 
  */
 public class MediatorAcao {
+	
+	private static MediatorAcao instancia;
+	
 	private RepositorioAcao repositorioAcao = new RepositorioAcao();
+	
+	private MediatorAcao() {}
+
+    public static MediatorAcao getInstance() {
+        if (instancia == null) {
+            instancia = new MediatorAcao();
+        }
+        return instancia;
+    }
 	
 	private String validar(Acao acao) {
 		if(acao.getIdentificador() < 1 || acao.getIdentificador() > 99999) {

@@ -53,7 +53,19 @@ import br.com.cesarschool.poo.titulos.repositorios.RepositorioEntidadeOperadora;
  * que ele retornar. Se o identificador for inválido, retornar null. 
  */
 public class MediatorEntidadeOperadora {
+	
+	private static MediatorEntidadeOperadora instancia;
+	
 	private RepositorioEntidadeOperadora repositorioEntidadeOperadora = new RepositorioEntidadeOperadora();
+	
+	private MediatorEntidadeOperadora() {}
+
+    public static MediatorEntidadeOperadora getInstance() {
+        if (instancia == null) {
+            instancia = new MediatorEntidadeOperadora();
+        }
+        return instancia;
+    }
 	
 	private String validar(EntidadeOperadora entidadeOperadora) {
 		if(entidadeOperadora.getIdentificador() < 1 || entidadeOperadora.getIdentificador() > 99999) {
