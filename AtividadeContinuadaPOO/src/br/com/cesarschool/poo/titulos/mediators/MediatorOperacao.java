@@ -146,7 +146,7 @@ public class MediatorOperacao {
         if (ehAcao && !debito.getAutorizadoAcao()) {
             return "Entidade de débito não autorizada para ação";
         }
-        //6 voltar
+        
         Acao acao = null;
         TituloDivida tituloDivida = null;
         if (ehAcao) {
@@ -203,7 +203,7 @@ public class MediatorOperacao {
         );
 
         repositorioTransacao.incluir(transacao);
-        // so pra testar
+        
         return "Operação realizada com sucesso";
     }
 
