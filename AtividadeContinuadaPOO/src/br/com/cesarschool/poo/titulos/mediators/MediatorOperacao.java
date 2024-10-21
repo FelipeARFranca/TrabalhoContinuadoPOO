@@ -123,7 +123,6 @@ public class MediatorOperacao {
         return instancia;
     }
 
-    // Método realizarOperacao
     public String realizarOperacao(boolean ehAcao, int entidadeCredito, int idEntidadeDebito, int idAcaoOuTitulo, double valor) {
         if (valor <= 0) {
             return "Valor inválido";
