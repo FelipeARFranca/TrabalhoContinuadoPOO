@@ -20,10 +20,6 @@ public class CrudEntidadeOperadora {
 		
 		int escolha = -1;
 		
-		while(escolha != 0) {
-			
-		}
-		
 		while (true) {
             System.out.println("======================================");
             System.out.println("           MENU PRINCIPAL            ");
