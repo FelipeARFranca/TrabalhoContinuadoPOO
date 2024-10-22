@@ -21,10 +21,6 @@ public class CrudAcao {
 		
 		int escolha = -1;
 		
-		while(escolha != 0) {
-			
-		}
-		
 		while (true) {
             System.out.println("======================================");
             System.out.println("           MENU PRINCIPAL            ");
