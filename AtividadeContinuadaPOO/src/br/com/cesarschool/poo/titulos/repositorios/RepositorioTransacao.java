@@ -178,8 +178,8 @@ public class RepositorioTransacao {
             );
         }
 
-        double valorOperacao = Double.parseDouble(dados[18]);
-        LocalDateTime dataHoraOperacao = LocalDateTime.parse(dados[19]);
+        double valorOperacao = Double.parseDouble(dados[15]);
+        LocalDateTime dataHoraOperacao = LocalDateTime.parse(dados[16]);
 
         return new Transacao(entidadeCredito, entidadeDebito, acao, tituloDivida, valorOperacao, dataHoraOperacao);
     }
