@@ -1,13 +1,8 @@
 package br.com.cesarschool.poo.titulos.repositorios;
 
 import br.com.cesarschool.poo.titulos.entidades.Acao;
-
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import br.gov.cesarschool.poo.daogenerico.DAOSerializadorObjetos;
+;
 
 /*
  * Deve gravar em e ler de um arquivo texto chamado Acao.txt os dados dos objetos do tipo
@@ -33,136 +28,38 @@ import java.time.format.DateTimeFormatter;
  * objeto. Caso o identificador n�o seja encontrado no arquivo, retornar null.   
  */
 
-public class RepositorioAcao { 
-
+public class RepositorioAcao extends RepositorioGeral{ 
+	
+	public RepositorioAcao() {
+		super();
+	}
+	
 	public boolean incluir(Acao acao) {
-
-		String dadoAcao = acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario();
-		boolean existingDataFlag = false;
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				String identificador = String.valueOf(acao.getIdentificador());
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(identificador.equals(lineId)) {
-					existingDataFlag = true;
-					break;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("Acao.txt", true)) {
-			writer.append(dadoAcao + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		DAOSerializadorObjetos dao = getDao();
+		
+		return dao.incluir(acao);
 	}
 
 	public boolean alterar(Acao acao) {
-		boolean existingDataFlag = false;
-		StringBuilder content = new StringBuilder();
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				String identificador = String.valueOf(acao.getIdentificador());
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(identificador.equals(lineId)) {
-					existingDataFlag = true;
-					content.append(acao.getIdentificador()+";"+acao.getNome()+";"+acao.getDataDeValidade()+";"+acao.getValorUnitario()).append("\n");
-				} else {
-					content.append(line).append("\n");
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (!existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("Acao.txt")) {
-			writer.write(content.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		DAOSerializadorObjetos dao = getDao();
+		
+		return dao.alterar(acao);
 	}
 
 	public boolean excluir(int identificador) {
-		boolean existingDataFlag = false;
-		StringBuilder content = new StringBuilder();
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(!lineId.equals(String.valueOf(identificador))) {
-					content.append(line).append("\n");
-				} else {
-					existingDataFlag = true;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (!existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("Acao.txt")) {
-			writer.write(content.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		DAOSerializadorObjetos dao = getDao();
+		
+		return dao.excluir(String.valueOf(identificador));
 	}
 
 	public Acao buscar(int identificador) {
-		try (BufferedReader reader = new BufferedReader(new FileReader("Acao.txt"))) {
-			String line;
+		DAOSerializadorObjetos dao = getDao();
+		
+		return (Acao)dao.buscar(String.valueOf(identificador));
+	}
 
-			while ((line = reader.readLine()) != null) {
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(lineId.equals(String.valueOf(identificador))) {
-					String[] dados = line.split(";");
-					String nome = dados[1];
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-					LocalDate dataDeValidade = LocalDate.parse(dados[2], formatter);
-					double valorUnitario = Double.parseDouble(dados[3]);
-
-					return new Acao(identificador, nome, dataDeValidade, valorUnitario);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	@Override
+	public Class<?> getClasseEntidade() {
+		return Acao.class;
 	}
 }

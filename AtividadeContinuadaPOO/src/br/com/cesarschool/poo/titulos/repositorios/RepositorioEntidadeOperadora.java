@@ -1,11 +1,8 @@
 package br.com.cesarschool.poo.titulos.repositorios;
 
 import br.com.cesarschool.poo.titulos.entidades.EntidadeOperadora;
+import br.gov.cesarschool.poo.daogenerico.DAOSerializadorObjetos;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
 
 /*
  * Deve gravar em e ler de um arquivo texto chamado Acao.txt os dados dos objetos do tipo
@@ -30,145 +27,37 @@ import java.io.IOException;
  * A busca deve localizar uma linha por identificador, materializar e retornar um 
  * objeto. Caso o identificador n�o seja encontrado no arquivo, retornar null.   
  */
-public class RepositorioEntidadeOperadora {
+public class RepositorioEntidadeOperadora extends RepositorioGeral{
+	
+	public RepositorioEntidadeOperadora() {
+		super();
+	}
 	
 	public boolean incluir(EntidadeOperadora entidadeOperadora) {
+		DAOSerializadorObjetos dao = getDao();
 
-		String dadoAcao = entidadeOperadora.getIdentificador()+";"+entidadeOperadora.getNome()+";"+entidadeOperadora.getAutorizadoAcao()+";"+entidadeOperadora.getSaldoAcao()+";"+entidadeOperadora.getSaldoTituloDivida();
-		boolean existingDataFlag = false;
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				String identificador = String.valueOf(entidadeOperadora.getIdentificador());
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(identificador.equals(lineId)) {
-					existingDataFlag = true;
-					break;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt", true)) {
-			writer.append(dadoAcao + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		return dao.incluir(entidadeOperadora);
 	}
 
 	public boolean alterar(EntidadeOperadora entidadeOperadora) {
-		boolean existingDataFlag = false;
-		StringBuilder content = new StringBuilder();
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				String identificador = String.valueOf(entidadeOperadora.getIdentificador());
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(identificador.equals(lineId)) {
-					existingDataFlag = true;
-					content.append(entidadeOperadora.getIdentificador()+";"+entidadeOperadora.getNome()+";"+entidadeOperadora.getAutorizadoAcao()+";"+entidadeOperadora.getSaldoAcao()+";"+entidadeOperadora.getSaldoTituloDivida()).append("\n");
-				} else {
-					content.append(line).append("\n");
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (!existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt")) {
-			writer.write(content.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		DAOSerializadorObjetos dao = getDao();
+		return dao.alterar(entidadeOperadora);
 	}
 
 	public boolean excluir(int identificador) {
-		boolean existingDataFlag = false;
-		StringBuilder content = new StringBuilder();
-
-		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String lineId = line.substring(0, line.indexOf(';'));
-
-				if(!lineId.equals(String.valueOf(identificador))) {
-					content.append(line).append("\n");
-				} else {
-					existingDataFlag = true;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if (!existingDataFlag) {
-			return false;
-		}
-
-		try (FileWriter writer = new FileWriter("EntidadeOperadora.txt")) {
-			writer.write(content.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
+		DAOSerializadorObjetos dao = getDao();
+		return dao.excluir(String.valueOf(identificador));
 	}
 
-	public EntidadeOperadora buscar(int identificador) {
-		try (BufferedReader reader = new BufferedReader(new FileReader("EntidadeOperadora.txt"))) {
-			String line;
+	public EntidadeOperadora buscar(long identificador) {
+		DAOSerializadorObjetos dao = getDao();
 
-			while ((line = reader.readLine()) != null) {
-				String lineId = line.substring(0, line.indexOf(';'));
+		return (EntidadeOperadora)dao.buscar(String.valueOf(identificador));
+	}
 
-				if(lineId.equals(String.valueOf(identificador))) {
-					
-					EntidadeOperadora entidadeOperadora = null;
-					
-					String[] dados = line.split(";");
-					String nome = dados[1];
-					boolean autorizadoAcao = Boolean.parseBoolean(dados[2]);
-					double saldoAcao = Double.parseDouble(dados[3]);
-					double saldoTituloDivida = Double.parseDouble(dados[4]);
-					
-					entidadeOperadora = new EntidadeOperadora(identificador, nome, autorizadoAcao);
-					
-					entidadeOperadora.creditarSaldoAcao(saldoAcao);
-					entidadeOperadora.creditarSaldoTituloDivida(saldoTituloDivida);
-
-					return entidadeOperadora;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	@Override
+	public Class<?> getClasseEntidade() {
+		return EntidadeOperadora.class;
 	}
 
 }

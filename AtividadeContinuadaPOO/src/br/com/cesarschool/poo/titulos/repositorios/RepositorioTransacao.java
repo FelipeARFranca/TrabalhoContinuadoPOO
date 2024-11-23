@@ -32,7 +32,7 @@ import java.util.List;
  * recebido como parâmetro.  
  */
 
-public class RepositorioTransacao {
+public class RepositorioTransacao extends RepositorioGeral{
 
     public boolean incluir(Transacao transacao) {
         String dadoTransacao = montarLinhaTransacao(transacao);
@@ -183,5 +183,10 @@ public class RepositorioTransacao {
 
         return new Transacao(entidadeCredito, entidadeDebito, acao, tituloDivida, valorOperacao, dataHoraOperacao);
     }
+
+	@Override
+	public Class<?> getClasseEntidade() {
+		return Transacao.class;
+	}
 
 }
