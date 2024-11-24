@@ -14,7 +14,7 @@ public class RelatorioTransacaoBroker {
 		DAOSerializadorObjetos dao = new DAOSerializadorObjetos(Transacao.class);
 		Entidade [] todasEntidades = dao.buscarTodos();
 		
-		List<Transacao> todasTransacoes = new ArrayList();
+		List<Transacao> todasTransacoes = new ArrayList<>();
 		
 		
 		for(Entidade entidade : todasEntidades) {
@@ -34,7 +34,7 @@ public class RelatorioTransacaoBroker {
 		DAOSerializadorObjetos dao = new DAOSerializadorObjetos(Transacao.class);
 		Entidade [] todasEntidades = dao.buscarTodos();
 		
-		List<Transacao> todasTransacoes = new ArrayList();
+		List<Transacao> todasTransacoes = new ArrayList<>();
 		
 		
 		for(Entidade entidade : todasEntidades) {
