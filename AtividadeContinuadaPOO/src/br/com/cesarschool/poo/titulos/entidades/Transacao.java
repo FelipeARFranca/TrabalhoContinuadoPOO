@@ -3,6 +3,7 @@ package br.com.cesarschool.poo.titulos.entidades;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import br.com.cesarschool.poo.titulos.utils.Comparavel;
 import br.gov.cesarschool.poo.daogenerico.Entidade;
 
 /*
@@ -20,7 +21,7 @@ import br.gov.cesarschool.poo.daogenerico.Entidade;
  * 
  *  
  */ 
-public class Transacao extends Entidade{
+public class Transacao extends Entidade implements Comparavel{
 	private EntidadeOperadora entidadeCredito;
 	private EntidadeOperadora entidadeDebito;
 	private Acao acao;
@@ -73,6 +74,19 @@ public class Transacao extends Entidade{
 		}
 		else {
 			return entidadeCredito.getIdUnico() + "_" + entidadeDebito.getIdUnico() + "_" + tituloDivida.getIdUnico() + "_" + dataFormatada;
+		}
+	}
+
+	@Override
+	public int comparar(Comparavel c) {
+		if(dataHoraOperacao.isBefore(((Transacao)c).getDataHoraOperacao())){
+			return 1;
+		}
+		else if (dataHoraOperacao.isAfter(((Transacao)c).getDataHoraOperacao())) {
+			return -1;
+		}
+		else {
+			return 0;
 		}
 	}
 
